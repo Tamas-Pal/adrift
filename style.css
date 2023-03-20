@@ -1,0 +1,28 @@
+* {
+  box-sizing: border-box;
+}
+
+canvas {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  z-index: -99;
+}
+
+body {
+  font-family: 'Space Mono', Tahoma;
+  font-weight: bold;
+  font-size: 20px;
+  letter-spacing: 2px;
+  background-color: rgb(127, 0, 255);
+  margin: 0;
+}
+
+main {
+  all: none;
+  margin: 0;
+}
+
+#p5_loading {
+  visibility: hidden;
+}
