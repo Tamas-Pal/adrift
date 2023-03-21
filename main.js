@@ -34,7 +34,6 @@ function getAPIData(countDown) {
   let now = new Date();
   console.log('api', (60 - now.getSeconds()) * 1000);
 
-
   var rootTime = `${now.getFullYear()}-${
     now.getMonth() + 1
   }-${now.getDate()}T${now.getHours()}:${now.getMinutes()}`;
@@ -55,9 +54,9 @@ let timeLeft = (60 - now.getSeconds()) * 1000;
 function startTimer(timeLeft) {
   countDown = timeLeft / 1000;
   setInterval(() => {
-    countDown = (countDown > 0 ? --countDown : 59);
-    renderObj.isResultState = (countDown > 58 ? false : true);
-    console.log(countDown, renderObj.isResultState)
+    countDown = countDown > 0 ? --countDown : 59;
+    renderObj.isResultState = countDown > 58 ? false : true;
+    console.log(countDown, renderObj.isResultState);
   }, 1000);
 }
 startTimer(timeLeft);
