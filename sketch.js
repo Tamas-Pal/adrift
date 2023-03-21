@@ -1,4 +1,5 @@
 import resultsArr from './main.js';
+
 import onClick from './onClick.js';
 
 const GRID_SIZE = Math.min(window.innerWidth, window.innerHeight) / 192;
@@ -8,9 +9,10 @@ const MARGIN = GRID_SIZE;
 const DISPLACE_AMT = 0.05;
 
 let font;
-
 let wordPosArr = [];
 let opacity;
+
+p5.isResultState = true;
 
 function renderAdjectivesP5(p5) {
   console.log(GRID_SIZE);
@@ -33,7 +35,7 @@ function renderAdjectivesP5(p5) {
       0,
       Math.min(canvasWidth, canvasHeight) / 5,
       GRID_SIZE,
-      0.01,
+      0.1,
       true
     );
   }
@@ -55,7 +57,7 @@ function renderAdjectivesP5(p5) {
         wordPositionX = MARGIN;
         wordPositionY += LINE_HEIGHT;
       }
-      if (wordPositionY > canvasHeight) {
+      if (wordPositionY >= canvasHeight) {
         //console.log(wordPosArr)
         return;
       }
@@ -81,7 +83,7 @@ function renderAdjectivesP5(p5) {
       p5.textFont(font);
       p5.text(resultsArr[i][0].toUpperCase(), wordPosArr[i].x, wordPosArr[i].y);
     }
-
+    // SCANNING "PIXELS" TO EVALUATE STARTING POSITIONS
     p5.loadPixels();
     for (let y = 0; y < canvasHeight; y += GRID_SIZE) {
       for (let x = 0; x < canvasWidth; x += GRID_SIZE) {
@@ -91,8 +93,10 @@ function renderAdjectivesP5(p5) {
         }
       }
     }
-
+    // CLEAN SLATE
     p5.background(127, 0, 255, 255);
+
+    // REARRANGING "PIXELS" TO RANDOM LOCATIONS
     //points = JSON.parse(JSON.stringify(points));
     for (let i = 0; i < pointOrigins.length; i++) {
       points[i] = p5.createVector(
@@ -107,17 +111,34 @@ function renderAdjectivesP5(p5) {
       );
     }
   };
-
+  // MOVING "PIXELS"
   p5.draw = function () {
+    // Calculate movement
+    function resultState(i) {
+      return {
+        x: (pointOrigins[i].x + points[i].x) / 2,
+        y: (pointOrigins[i].y + points[i].y) / 2,
+      };
+    }
+
+    function waveState(i) {
+      return {
+        x: canvasWidth * Math.abs(Math.sin(points[i].x)),
+        y: Math.abs(i) % canvasHeight,
+      };
+    }
+
+    // console.log(points[0].x,points[0].y)
+    // Render Movement
     p5.colorMode(p5.RGB);
     p5.background(127, 0, 255, 127);
     p5.fill(0);
+    // > render highlight
     opacity > 0.021 ? (opacity -= 0.02) : (opacity = 0);
     if (wordIndex != undefined) {
       onClick(p5, wordIndex);
     }
     p5.randomSeed(0);
-
     for (let i = 0; i < points.length; i++) {
       let displacementDistance = p5.dist(
         points[i].x,
@@ -125,11 +146,21 @@ function renderAdjectivesP5(p5) {
         pointOrigins[i].x,
         pointOrigins[i].y
       );
-      let entropyMultiplier = p5.map(displacementDistance, 0, canvasHeight, .5, LINE_HEIGHT);
+      let entropyMultiplier = p5.map(
+        displacementDistance,
+        0,
+        canvasHeight,
+        0.5,
+        LINE_HEIGHT
+      );
+
+      let attractorFunction =
+        p5.isResultState == true ? resultState : waveState;
+      let attractor = attractorFunction(i);
+      /* let attractorX = (pointOrigins[i].x + points[i].x) / 2;
+      let attractorY = (pointOrigins[i].y + points[i].y) / 2;*/
       let displacement = p5.random(-DISPLACE_AMT, DISPLACE_AMT);
-      let attractorX = (pointOrigins[i].x + points[i].x) / 2;
       let entropyX = points[i].x + displacement * entropyMultiplier;
-      let attractorY = (pointOrigins[i].y + points[i].y) / 2;
       let entropyY = points[i].y + displacement * entropyMultiplier;
 
       let pointerDistance = p5.dist(
@@ -148,9 +179,9 @@ function renderAdjectivesP5(p5) {
       );
 
       points[i].x =
-        attractorX * (1 - distanceWeight) + entropyX * distanceWeight;
+        attractor.x * (1 - distanceWeight) + entropyX * distanceWeight;
       points[i].y =
-        attractorY * (1 - distanceWeight) + entropyY * distanceWeight;
+        attractor.y * (1 - distanceWeight) + entropyY * distanceWeight;
 
       p5.colorMode(p5.RGB);
       p5.fill(0);
@@ -162,10 +193,14 @@ function renderAdjectivesP5(p5) {
         calcParticleSize(i)
       );
     }
-
+    //console.log(p5.isResultState);
+    // EXTRACT WORD WHEN CLICKED
     p5.mousePressed = function (event) {
-      console.log(event.srcElement);
-      if (event.srcElement != document.querySelector('canvas')) {
+      //console.log(event.srcElement);
+      if (
+        event.srcElement != document.querySelector('canvas') ||
+        p5.isResultState === false
+      ) {
         return;
       }
       opacity = 1;
@@ -206,5 +241,6 @@ function renderAdjectivesP5(p5) {
     };
   };
 }
+
 export default renderAdjectivesP5;
 export { GRID_SIZE, LINE_HEIGHT, CHAR_WIDTH, wordPosArr, resultsArr, opacity };
