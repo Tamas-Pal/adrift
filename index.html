@@ -4,20 +4,44 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AdriftSearch</title>
+    <link rel="stylesheet" href="./style.css">
   </head>
   <main>
-    <form id="search">
-      <label for="input">
-        <input required id="input" name="input" />
-        <input type="submit" value="Submit" />
-      </label>
-    </form>
+    <header>
+      <div class="home">
+        <a class="logo-link" aria-label="Adrift Search" tabindex="0" href="/">
+          <img class="a-logo" aria-hidden="true" src="./AdriftLogo.svg" /><img class="a-logo-hidden" aria-hidden="true" src="./AdriftLogo.svg" /><img
+            class="s-logo"
+            aria-hidden="true"
+            src="./SearchLogo.svg"
+          />
+          <div class="dot one"></div>
+          <div class="dot two"></div>
+          <div class="dot three"></div>
+          <div class="dot four"></div>
+        </a>
+        <button class="info" aria-label="Info">i</button>
+      </div>
+      <form id="search" novalidate >
+        <label for="input">
+          <input required id="input" name="input" placeholder="Think of something to >>" />
+          <input id="submit" type="submit" value="Describe" />
+        </label>
+      </form>
+    </header>
+    <div class="info-desc-wrapper">
+      <section class="hidden info-desc" aria-label="Page Description">
+        ADRIFT SEARCH
+        <div class="desc-divider"></div>
+        It is a visual search engine project by Tamás Pál. It uses the News API
+        and RiTa to retrieve adjectives from articles. The results are then
+        rendered in a drifting particle system using P5.js.
+      </section>
+    </div>
     <div id="p5_loading" class="loadingclass"></div>
-    <!-- <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet"> -->
-    <!-- <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@700&display=swap" rel="stylesheet"> -->
+
     <script src="./node_modules/rita/dist/rita.js"></script>
     <script src="./node_modules/p5/lib/p5.js"></script>
     <script type="module" src="/main.js"></script>
-    <!-- <script src="sketch.js" type="module"></script> -->
   </main>
 </html>

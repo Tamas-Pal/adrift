@@ -6,12 +6,13 @@ const GRID_SIZE = Math.min(window.innerWidth, window.innerHeight) / 192;
 const LINE_HEIGHT = GRID_SIZE * 16;
 const CHAR_WIDTH = LINE_HEIGHT * 0.61;
 const MARGIN = GRID_SIZE;
-const DISPLACE_AMT = 0.05;
+const DISPLACE_AMT = 0.01;
 
 let font;
 let wordPosArr = [];
 let opacity;
 
+p5.waveAnimator;
 p5.isResultState = true;
 
 function renderAdjectivesP5(p5) {
@@ -21,9 +22,11 @@ function renderAdjectivesP5(p5) {
   let points = [];
   opacity = 1;
   let canvasWidth = p5.windowWidth;
-  let canvasHeight = p5.windowHeight - MARGIN * 5;
+  let canvasHeight = p5.windowHeight - 45;
+  let shorterCoord = Math.min(canvasWidth, canvasHeight);
+  //let longerCoord = Math.max(canvasWidth, canvasHeight);
 
-  function calcParticleSize(index) {
+  function calcResultParticleSize(index) {
     let displacementDistance = p5.dist(
       points[index].x,
       points[index].y,
@@ -33,23 +36,41 @@ function renderAdjectivesP5(p5) {
     return p5.map(
       displacementDistance,
       0,
-      Math.min(canvasWidth, canvasHeight) / 5,
+      shorterCoord / 5,
       GRID_SIZE,
-      0.1,
+      1,
+      true
+    );
+  }
+  function calcWaveParticleSize(index) {
+    let centerDistance = p5.dist(
+      points[index].x,
+      points[index].y,
+      canvasWidth / 2,
+      canvasHeight / 2
+    );
+    return p5.map(
+      centerDistance % (shorterCoord / p5.waveAnimator),
+      0,
+      shorterCoord / 4,
+      GRID_SIZE * 0.75,
+      1,
       true
     );
   }
 
   function wordPositioning() {
     let wordPositionX = MARGIN;
-    let wordPositionY = LINE_HEIGHT;
+    let wordPositionY = LINE_HEIGHT - MARGIN * 2;
 
     function wordLength(index) {
       return resultsArr[index]
         ? (resultsArr[index][0].length + 2) * CHAR_WIDTH
         : 0;
     }
-
+    for (let i = wordPosArr.length; i > 0; i--) {
+      wordPosArr.pop();
+    }
     for (let i = 0; i < resultsArr.length; i++) {
       wordPosArr[i] = p5.createVector(wordPositionX, wordPositionY);
       wordPositionX += wordLength(i);
@@ -71,8 +92,8 @@ function renderAdjectivesP5(p5) {
   p5.setup = function () {
     p5.pixelDensity(1);
     p5.createCanvas(canvasWidth, canvasHeight);
-    document.querySelector('canvas').style.top = `${MARGIN * 5}px`;
-    p5.background(127, 0, 255, 192);
+    //document.querySelector('canvas').style.top = `24px`;
+    p5.background(127, 0, 255);
 
     wordPositioning();
 
@@ -94,9 +115,10 @@ function renderAdjectivesP5(p5) {
       }
     }
     // CLEAN SLATE
-    p5.background(127, 0, 255, 255);
+    p5.background(127, 0, 255);
 
     // REARRANGING "PIXELS" TO RANDOM LOCATIONS
+
     //points = JSON.parse(JSON.stringify(points));
     for (let i = 0; i < pointOrigins.length; i++) {
       points[i] = p5.createVector(
@@ -106,13 +128,14 @@ function renderAdjectivesP5(p5) {
       p5.rect(
         points[i].x,
         points[i].y,
-        calcParticleSize(i),
-        calcParticleSize(i)
+        calcResultParticleSize(i),
+        calcResultParticleSize(i)
       );
     }
   };
   // MOVING "PIXELS"
   p5.draw = function () {
+    p5.waveAnimator += 0.2;
     // Calculate movement
     function resultState(i) {
       return {
@@ -122,16 +145,22 @@ function renderAdjectivesP5(p5) {
     }
 
     function waveState(i) {
+      //console.log(p5.waveAnimator)
       return {
-        x: canvasWidth * Math.abs(Math.sin(points[i].x)),
-        y: Math.abs(i) % canvasHeight,
+        x: points[i].x,
+        y: points[i].y,
+        // x: p5.map(Math.sin(i) / p5.waveAnimator, -1, 1, (canvasWidth-shorterCoord)/2, (canvasWidth+shorterCoord)/2),
+        // y: p5.map(Math.cos(i) / p5.waveAnimator, -1, 1, (canvasHeight-shorterCoord)/2, (canvasHeight+shorterCoord)/2),
+        //y: Math.cos(i) * p5.random(0, canvasHeight/2) + canvasHeight/2,
+        //x: canvasWidth * Math.abs(Math.sin(points[i].x)),
+        // y: Math.abs(i) % canvasHeight,
       };
     }
 
     // console.log(points[0].x,points[0].y)
     // Render Movement
     p5.colorMode(p5.RGB);
-    p5.background(127, 0, 255, 127);
+    p5.background(127, 0, 255, 192);
     p5.fill(0);
     // > render highlight
     opacity > 0.021 ? (opacity -= 0.02) : (opacity = 0);
@@ -158,8 +187,9 @@ function renderAdjectivesP5(p5) {
         p5.isResultState == true ? resultState : waveState;
       let attractor = attractorFunction(i);
       /* let attractorX = (pointOrigins[i].x + points[i].x) / 2;
-      let attractorY = (pointOrigins[i].y + points[i].y) / 2;*/
+          let attractorY = (pointOrigins[i].y + points[i].y) / 2;*/
       let displacement = p5.random(-DISPLACE_AMT, DISPLACE_AMT);
+      let noiseDisplace = p5.map(p5.noise(points[i].x, points[i].y), 0, 1, -DISPLACE_AMT*5, DISPLACE_AMT*20);
       let entropyX = points[i].x + displacement * entropyMultiplier;
       let entropyY = points[i].y + displacement * entropyMultiplier;
 
@@ -172,17 +202,24 @@ function renderAdjectivesP5(p5) {
       let distanceWeight = p5.map(
         pointerDistance,
         0,
-        Math.min(canvasWidth, canvasHeight) / 5,
+        shorterCoord / 5,
         0,
         1,
         true
       );
+  
 
       points[i].x =
-        attractor.x * (1 - distanceWeight) + entropyX * distanceWeight;
+        attractor.x * (1 - distanceWeight) +
+        entropyX * distanceWeight +
+        noiseDisplace;
       points[i].y =
         attractor.y * (1 - distanceWeight) + entropyY * distanceWeight;
 
+      let calcParticleSize =
+        p5.isResultState == true
+          ? calcResultParticleSize
+          : calcWaveParticleSize;
       p5.colorMode(p5.RGB);
       p5.fill(0);
       p5.noStroke();

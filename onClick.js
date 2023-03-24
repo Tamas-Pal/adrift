@@ -18,7 +18,7 @@ function onClick(p5, index) {
     p5.noStroke();
     p5.colorMode(p5.HSB);
     p5.noFill();
-    p5.fill(`rgba(255, 0, 127, ${opacity})`);
+    p5.fill(`rgba(255, 240, 240, ${p5.map(opacity, 0, 0.021, 0, 1)})`);
     //console.log(opacity)
     //p5.fill(330, 100, 100);
     //p5.fill(p5.map(Math.sin(hue), 0, 1, 330, 360), 100, 100);
