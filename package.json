@@ -9,9 +9,11 @@
     "preview": "vite preview"
   },
   "devDependencies": {
+    "eslint": "^8.57.0",
     "vite": "^4.1.0"
   },
   "dependencies": {
+    "dotenv": "^16.4.5",
     "p5": "^1.6.0",
     "rita": "^2.8.31"
   }
