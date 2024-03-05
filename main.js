@@ -12,12 +12,6 @@ function prepareAdjectives(responseJSON) {
   console.log(responseJSON);
   const articles = responseJSON.articles;
 
-  // empty out results array before repopulation
-  /*
-  for (let j = resultsArr.length; j > 0; j--) {
-    resultsArr.pop();
-  }
-*/
   for (let i = 0; i < articles.length; i++) {
     // create token array from article titles (~ take apart for words)
     let tokensArr = RiTa.tokens(articles[i].title);
@@ -43,7 +37,7 @@ async function getAPIData() {
     `https://newsapi.org/v2/everything?q=${userInput}&language=en&sortBy=relevancy&apiKey=${
       import.meta.env.VITE_API_KEY
     }`
-  ); // &searchIn=title
+  );
   const responseJSON = await response.json();
   // TO TEST WITHOUT API>
   //const responseJSON = { articles };
@@ -54,7 +48,6 @@ async function performSearch(event) {
   event.preventDefault();
   const responseJSON = await getAPIData();
   const resultsArr = prepareAdjectives(responseJSON);
-  //console.log(resultsArr);
 
   // P5
   if (renderObj) {
