@@ -25,9 +25,9 @@ function prepareAdjectives(responseJSON) {
       }
     }
   }
+  
   // randomize order
   resultsArr.sort(() => 0.5 - Math.random());
-
   return resultsArr;
 }
 
