@@ -22,7 +22,6 @@ function prepareAdjectives(news) {
     }
   }
   
-  console.log(results);
   // randomize order
   results.sort(() => 0.5 - Math.random());
   return results;
@@ -36,7 +35,7 @@ async function getAPIData() {
      }`
   );
   const responseJSON = await response.json();
-  
+
   return responseJSON.news;
 }
 
