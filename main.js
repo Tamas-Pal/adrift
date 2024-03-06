@@ -1,53 +1,49 @@
 import renderAdjectivesP5 from './src/sketch.js';
 import p5 from 'p5';
-// TO TEST WITHOUT API>
-//import { articles } from './util/articles.json';
 import  RiTa  from 'rita';
 
 let renderObj;
 
-function prepareAdjectives(responseJSON) {
-  var resultsArr = [];
+function prepareAdjectives(news) {
+  var results = [];
   // load articles fetched from news api
-  console.log(responseJSON);
-  const articles = responseJSON.articles;
-
-  for (let i = 0; i < articles.length; i++) {
+  
+  for (let i = 0; i < news.length; i++) {
     // create token array from article titles (~ take apart for words)
-    let tokensArr = RiTa.tokens(articles[i].title);
+    let tokens = RiTa.tokens(news[i].title);
     // create part-of-speech array > https://rednoise.org/rita/reference/postags.html
-    let posArr = RiTa.pos(tokensArr);
-
+    let positions = RiTa.pos(tokens);
+    
     // test for adjectives (`/jj/`), push in result array with article url
-    for (let j = 0; j < posArr.length; j++) {
-      if (/jj/.test(posArr[j])) {
-        resultsArr.push([tokensArr[j], articles[i].url]);
+    for (let j = 0; j < positions.length; j++) {
+      if (/jj/.test(positions[j])) {
+        results.push([tokens[j], news[i].url]);
       }
     }
   }
   
+  console.log(results);
   // randomize order
-  resultsArr.sort(() => 0.5 - Math.random());
-  return resultsArr;
+  results.sort(() => 0.5 - Math.random());
+  return results;
 }
 
 async function getAPIData() {
   const userInput = document.getElementById('input').value;
   const response = await fetch(
-    `https://newsapi.org/v2/everything?q=${userInput}&language=en&sortBy=relevancy&apiKey=${
-      import.meta.env.VITE_API_KEY
-    }`
+    `https://api.worldnewsapi.com/search-news?text=${userInput}&language=en&number=100&api-key=${
+       import.meta.env.VITE_API_KEY
+     }`
   );
   const responseJSON = await response.json();
-  // TO TEST WITHOUT API>
-  //const responseJSON = { articles };
-  return responseJSON;
+  
+  return responseJSON.news;
 }
 
 async function performSearch(event) {
   event.preventDefault();
-  const responseJSON = await getAPIData();
-  const resultsArr = prepareAdjectives(responseJSON);
+  const news = await getAPIData();
+  const results = prepareAdjectives(news);
 
   // P5
   if (renderObj) {
@@ -57,7 +53,7 @@ async function performSearch(event) {
   // set up intro animation
   renderObj.waveAnimator = 1;
   renderObj.isResultState = false;
-  renderObj.resultsArr = resultsArr
+  renderObj.results = results
   setTimeout(() => (renderObj.isResultState = true), 2000);
 }
 

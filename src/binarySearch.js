@@ -4,7 +4,7 @@ export function binarySearch(p5, start, end, LINE_HEIGHT, CHAR_WIDTH, wordCoords
     let wordBounds = {
       top: wordCoords[middle].y - LINE_HEIGHT,
       right:
-        wordCoords[middle].x + p5.resultsArr[middle][0].length * CHAR_WIDTH,
+        wordCoords[middle].x + p5.results[middle][0].length * CHAR_WIDTH,
       bottom: wordCoords[middle].y,
       left: wordCoords[middle].x,
     };
@@ -17,7 +17,7 @@ export function binarySearch(p5, start, end, LINE_HEIGHT, CHAR_WIDTH, wordCoords
       p5.mouseY >= wordBounds.top &&
       p5.mouseY < wordBounds.bottom
     ) {
-      window.open(p5.resultsArr[middle][1], '_blank');
+      window.open(p5.results[middle][1], '_blank');
       return middle;
     } else if (
       p5.mouseY < wordBounds.top ||

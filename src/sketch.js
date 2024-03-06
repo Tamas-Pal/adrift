@@ -1,4 +1,4 @@
-// import resultsArr from './main.js';
+// import results from './main.js';
 import p5 from 'p5';
 import renderHighlight from './renderHighlight.js';
 import createWordCoords from './createWordCoords.js';
@@ -24,7 +24,7 @@ p5.waveAnimator;
 p5.isResultState = true;
 
 function renderAdjectivesP5(p5) {
-  p5.resultsArr = [];
+  p5.results = [];
   let wordIndex;
   let pointOrigins = [];
   let points = [];
@@ -51,7 +51,7 @@ function renderAdjectivesP5(p5) {
       CHAR_WIDTH,
       canvasHeight,
       canvasWidth,
-      p5.resultsArr
+      p5.results
     );
     // render words
     for (let i = 0; i < wordCoords.length; i++) {
@@ -60,7 +60,7 @@ function renderAdjectivesP5(p5) {
       p5.textSize(LINE_HEIGHT);
       p5.textFont(font);
       p5.text(
-        p5.resultsArr[i][0].toUpperCase(),
+        p5.results[i][0].toUpperCase(),
         wordCoords[i].x,
         wordCoords[i].y
       );
@@ -113,7 +113,7 @@ function renderAdjectivesP5(p5) {
         LINE_HEIGHT,
         CHAR_WIDTH,
         wordCoords,
-        p5.resultsArr,
+        p5.results,
         highlightOpacity
       );
     }

@@ -4,15 +4,15 @@ export default function renderHighlight(
   GRID_SIZE,
   LINE_HEIGHT,
   CHAR_WIDTH,
-  wordPosArr,
-  resultsArr,
+  wordPositions,
+  results,
   opacity
 ) {
   if (index != undefined) {
     let newRect = [
-      wordPosArr[index].x,
-      wordPosArr[index].y + GRID_SIZE,
-      resultsArr[index][0].length * CHAR_WIDTH,
+      wordPositions[index].x,
+      wordPositions[index].y + GRID_SIZE,
+      results[index][0].length * CHAR_WIDTH,
       -LINE_HEIGHT,
     ];
 
