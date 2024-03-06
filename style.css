@@ -3,8 +3,8 @@
 }
 
 @font-face {
-  font-family: 'IBM Plex';
-  src: url('./public/font/IBMPlexMono-Regular.ttf') format('truetype');
+  font-family: 'Space Mono';
+  src: url('/font/SpaceMono-Regular.ttf') format('truetype');
 }
 
 :root {
@@ -18,7 +18,7 @@ main {
 }
 
 body {
-  font-family: 'IBM Plex', monospace, sans-serif;
+  font-family: 'Space Mono', monospace, sans-serif;
   font-weight: bold;
   font-size: 12px;
   letter-spacing: 2px;

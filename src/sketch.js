@@ -34,7 +34,7 @@ function renderAdjectivesP5(p5) {
   let shorterAxisLength = Math.min(canvasWidth, canvasHeight);
 
   p5.preload = function () {
-    font = p5.loadFont('../public/font/IBMPlexMono-Regular.ttf');
+    font = p5.loadFont('/font/SpaceMono-Regular.ttf');
   };
 
   p5.setup = function () {
