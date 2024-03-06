@@ -4,7 +4,7 @@
 
 @font-face {
   font-family: 'Space Mono';
-  src: url(./font/SpaceMono-Regular.ttf) format('truetype');
+  src: url(./public/font/SpaceMono-Regular.ttf) format('truetype');
 }
 
 :root {
